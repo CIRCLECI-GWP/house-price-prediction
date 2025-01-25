@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@2
-
 jobs:
   preprocess_data:
     docker:
