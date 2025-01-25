@@ -9,9 +9,16 @@ jobs:
       - image: cimg/python:3.8
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Install Dependencies
           command: pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ~/.cache/pip
+          key: python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Preprocess Data
           command: python preprocess.py
