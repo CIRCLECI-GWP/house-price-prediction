@@ -23,7 +23,7 @@ jobs:
           name: Preprocess Data
           command: python preprocess.py
       - persist_to_workspace:
-          root: .
+          root: ~/project
           paths:
             - X_train.csv
             - X_test.csv
