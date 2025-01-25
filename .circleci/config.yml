@@ -1,0 +1,64 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2
+
+jobs:
+  preprocess_data:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Preprocess Data
+          command: python preprocess.py
+      - persist_to_workspace:
+          root: .
+          paths:
+            - X_train.csv
+            - X_test.csv
+            - y_train.csv
+            - y_test.csv
+
+  train_model:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - run:
+          name: Cleanup Existing Files
+          command: rm -rf /home/circleci/project && mkdir /home/circleci/project
+      - checkout:
+          when: always
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: Train Model
+          command: python train.py
+      - persist_to_workspace:
+          root: .
+          paths:
+            - model.joblib
+
+  evaluate_model:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: Evaluate Model
+          command: python evaluate.py
+
+workflows:
+  build-and-test:
+    jobs:
+      - preprocess_data
+      - train_model:
+          requires:
+            - preprocess_data
+      - evaluate_model:
+          requires:
+            - train_model
