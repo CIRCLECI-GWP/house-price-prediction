@@ -9,9 +9,16 @@ jobs:
       - image: cimg/python:3.8
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Install Dependencies
           command: pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ~/.cache/pip
+          key: python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Preprocess Data
           command: python preprocess.py
@@ -31,7 +38,7 @@ jobs:
           name: Cleanup Existing Files
           command: rm -rf /home/circleci/project && mkdir /home/circleci/project
       - checkout:
-          when: always   # Ensure checkout always runs, even if the folder exists
+          when: always  # Ensure checkout always runs, even if the folder exists
       - attach_workspace:
           at: /home/circleci/project
       - run:
@@ -44,9 +51,16 @@ jobs:
               echo "ERROR: X_train.csv not found!"
               exit 1
             fi
+      - restore_cache:
+          keys:
+            - python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Install Dependencies
           command: pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ~/.cache/pip
+          key: python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Train Model
           command: python train.py
@@ -76,9 +90,16 @@ jobs:
               echo "ERROR: model.joblib not found!"
               exit 1
             fi
+      - restore_cache:
+          keys:
+            - python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Install Dependencies
           command: pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ~/.cache/pip
+          key: python-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Evaluate Model
           command: python evaluate.py
