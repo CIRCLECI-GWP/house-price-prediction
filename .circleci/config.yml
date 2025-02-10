@@ -1,7 +1,73 @@
 version: 2.1
 
 jobs:
-  preprocess_data:
+  preprocess_data_A:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - run:
+          name: Cleanup Existing Files
+          command: rm -rf /home/circleci/project && mkdir /home/circleci/project
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Preprocess Data
+          command: python preprocess.py
+      - persist_to_workspace:
+          root: .
+          paths:
+            - X_train.csv
+            - X_test.csv
+            - y_train.csv
+            - y_test.csv
+
+  preprocess_data_B:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - run:
+          name: Cleanup Existing Files
+          command: rm -rf /home/circleci/project && mkdir /home/circleci/project
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Preprocess Data
+          command: python preprocess.py
+      - persist_to_workspace:
+          root: .
+          paths:
+            - X_train.csv
+            - X_test.csv
+            - y_train.csv
+            - y_test.csv
+
+  preprocess_data_C:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - run:
+          name: Cleanup Existing Files
+          command: rm -rf /home/circleci/project && mkdir /home/circleci/project
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Preprocess Data
+          command: python preprocess.py
+      - persist_to_workspace:
+          root: .
+          paths:
+            - X_train.csv
+            - X_test.csv
+            - y_train.csv
+            - y_test.csv
+
+  preprocess_data_D:
     docker:
       - image: cimg/python:3.8
     steps:
@@ -258,19 +324,22 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - preprocess_data
+      - preprocess_data_A
+      - preprocess_data_B
+      - preprocess_data_C
+      - preprocess_data_D
       - train_model_A:
           requires:
-            - preprocess_data
+            - preprocess_data_A
       - train_model_B:
           requires:
-            - preprocess_data
+            - preprocess_data_B
       - train_model_C:
           requires:
-            - preprocess_data
+            - preprocess_data_C
       - train_model_D:
           requires:
-            - preprocess_data
+            - preprocess_data_D
       - evaluate_model_A:
           requires:
             - train_model_A
