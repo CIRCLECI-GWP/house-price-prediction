@@ -283,7 +283,7 @@ jobs:
       - run:
           name: Check if Model Exists
           command: |
-            if [ ! -f /home/circleci/project/model_A.joblib ]; then
+            if [ ! -f /home/circleci/project/model_C.joblib ]; then
               echo "ERROR: model_C.joblib not found!"
               exit 1
             fi
@@ -310,7 +310,7 @@ jobs:
       - run:
           name: Check if Model Exists
           command: |
-            if [ ! -f /home/circleci/project/model_A.joblib ]; then
+            if [ ! -f /home/circleci/project/model_D.joblib ]; then
               echo "ERROR: model_D.joblib not found!"
               exit 1
             fi
